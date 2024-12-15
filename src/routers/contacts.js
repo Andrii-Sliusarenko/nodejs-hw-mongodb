@@ -9,4 +9,6 @@ contactsRouter.get('/', ctrlWrapper(contactsController.getAllContactsController)
 
 contactsRouter.get('/:contactId', ctrlWrapper(contactsController.getAllContactsByIdController));
 
+contactsRouter.post('/', ctrlWrapper(contactsController.createContactController));
+
 export default contactsRouter;
