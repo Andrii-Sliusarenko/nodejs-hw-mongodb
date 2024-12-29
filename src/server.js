@@ -1,11 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import contactsRouter from './routers/contacts.js';
+import router from './routers/contacts.js';
 import { logger } from './middlewares/logger.js';
 import { notFounHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
-
+import authRouter from './routers/auth.js';
 dotenv.config();
 const PORT = Number(process.env.PORT) || 3000;
 
@@ -15,7 +15,8 @@ export const setupServer = () => {
   app.use(cors());
   app.use(express.json());
   app.use(logger);
-  app.use('/contacts', contactsRouter);
+  app.use('/auth', authRouter);
+  app.use('/contacts', router);
   app.use('*', notFounHandler);
   app.use(errorHandler);
   app.listen(PORT, () => {

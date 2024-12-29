@@ -8,32 +8,24 @@ import { createContactSchema, updateContactSchema } from '../validation/contacts
 
 import * as contactsController from '../controllers/contacts.js';
 
-const contactsRouter = Router();
-contactsRouter.get('/', ctrlWrapper(contactsController.getAllContactsController));
+const router = Router();
+router.get('/', ctrlWrapper(contactsController.getAllContactsController));
 
-contactsRouter.get(
-  '/:contactId',
-  isValidId,
-  ctrlWrapper(contactsController.getAllContactsByIdController),
-);
+router.get('/:contactId', isValidId, ctrlWrapper(contactsController.getAllContactsByIdController));
 
-contactsRouter.post(
+router.post(
   '/',
   validateBody(createContactSchema),
   ctrlWrapper(contactsController.createContactController),
 );
 
-contactsRouter.patch(
+router.patch(
   '/:contactId',
   isValidId,
   validateBody(updateContactSchema),
   ctrlWrapper(contactsController.patchContactController),
 );
 
-contactsRouter.delete(
-  '/:contactId',
-  isValidId,
-  ctrlWrapper(contactsController.deleteContactController),
-);
+router.delete('/:contactId', isValidId, ctrlWrapper(contactsController.deleteContactController));
 
-export default contactsRouter;
+export default router;
