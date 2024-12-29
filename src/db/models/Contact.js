@@ -4,6 +4,8 @@ import { contactsType } from '../../constants/contacts.js';
 
 import { handleSaveError } from './hooks.js';
 
+import { mailFormat } from '../../constants/index.js';
+
 const contactSchema = new Schema(
   {
     name: {
@@ -16,6 +18,7 @@ const contactSchema = new Schema(
     },
     email: {
       type: String,
+      match: mailFormat,
     },
     isFavourite: {
       type: Boolean,
@@ -26,10 +29,20 @@ const contactSchema = new Schema(
       type: String,
       enum: contactsType,
       required: true,
-      default: ['personal'],
+      default: 'personal',
+    },
+    userId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: 'users',
     },
   },
-  { versionKey: false, timestamps: true, createdAt: Date.now, updatedAt: Date.now },
+  {
+    versionKey: false,
+    timestamps: true,
+    createdAt: Date.now,
+    updatedAt: Date.now,
+  },
 );
 
 contactSchema.post('save', handleSaveError);
