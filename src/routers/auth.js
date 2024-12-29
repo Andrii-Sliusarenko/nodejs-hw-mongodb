@@ -12,9 +12,15 @@ router.post(
   validateBody(registerUserSchema),
   ctrlWrapper(authController.registerUserController),
 );
+
 router.post(
   '/login',
   validateBody(loginUserSchema),
   ctrlWrapper(authController.loginUserController),
 );
+
+router.post('/logout', ctrlWrapper(authController.logoutUserController));
+
+router.post('/refresh', ctrlWrapper(authController.refreshUsersSessionController));
+
 export default router;
