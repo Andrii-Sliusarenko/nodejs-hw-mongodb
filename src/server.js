@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import router from './routers/contacts.js';
 import { logger } from './middlewares/logger.js';
@@ -14,6 +15,7 @@ export const setupServer = () => {
 
   app.use(cors());
   app.use(express.json());
+  app.use(cookieParser());
   app.use(logger);
   app.use('/auth', authRouter);
   app.use('/contacts', router);
