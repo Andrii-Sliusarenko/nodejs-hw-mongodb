@@ -16,9 +16,7 @@ export const authenticate = async (req, res, next) => {
     next(createHttpError(401, 'Auth header should be of type Bearer'));
     return;
   }
-  const session = await SessionsCollection.findOne({
-    accessToken: token,
-  });
+  const session = await SessionsCollection.findOne({ accessToken: token });
   if (!session) {
     next(createHttpError(401, 'Session not found'));
     return;
