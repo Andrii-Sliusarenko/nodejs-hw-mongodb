@@ -7,5 +7,3 @@ const bootstrap = async () => {
 };
 
 bootstrap();
-
-// 9ux6ZOZHRKsLBlb7
