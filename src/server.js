@@ -7,6 +7,8 @@ import { logger } from './middlewares/logger.js';
 import { notFounHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import authRouter from './routers/auth.js';
+import { UPLOAD_DIR } from './constants/index.js';
+
 dotenv.config();
 const PORT = Number(process.env.PORT) || 3000;
 
@@ -21,6 +23,7 @@ export const setupServer = () => {
   app.use('/contacts', router);
   app.use('*', notFounHandler);
   app.use(errorHandler);
+  app.use('/uploads', express.static(UPLOAD_DIR));
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
