@@ -2,11 +2,13 @@ import { Router } from 'express';
 
 import * as authController from '../controllers/auth.js';
 import { validateBody } from '../middlewares/validateBody.js';
-import { registerUserSchema } from '../validation/auth.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
-import { loginUserSchema } from '../validation/auth.js';
-import { requestResetEmailSchema } from '../validation/auth.js';
-import { requestResetEmailController } from '../controllers/auth.js';
+import {
+  registerUserSchema,
+  loginUserSchema,
+  requestResetEmailSchema,
+  resetPasswordSchema,
+} from '../validation/auth.js';
 
 const router = Router();
 router.post(
@@ -28,7 +30,12 @@ router.post('/refresh', ctrlWrapper(authController.refreshUsersSessionController
 router.post(
   '/send-reset-email',
   validateBody(requestResetEmailSchema),
-  ctrlWrapper(requestResetEmailController),
+  ctrlWrapper(authController.requestResetEmailController),
 );
 
+router.post(
+  '/reset-pwd',
+  validateBody(resetPasswordSchema),
+  ctrlWrapper(authController.resetPasswordController),
+);
 export default router;
