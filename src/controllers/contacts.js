@@ -1,10 +1,16 @@
 import * as contactsServices from '../services/contacts.js';
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 
 import createHttpError from 'http-errors';
 
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
+
+dotenv.config();
 
 export const getAllContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
@@ -45,7 +51,17 @@ export const getAllContactsByIdController = async (req, res, next) => {
 
 export const createContactController = async (req, res) => {
   const userId = req.user._id;
-  const contact = await contactsServices.createContact({ ...req.body, userId });
+  const photo = req.file;
+  console.log(photo);
+  let photoUrl;
+  if (photo) {
+    if (process.env.ENABLE_CLOUDINARY === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+  }
+  const contact = await contactsServices.createContact({ ...req.body, userId, photo: photoUrl });
 
   res.status(201).json({
     status: 201,
@@ -57,7 +73,24 @@ export const createContactController = async (req, res) => {
 export const patchContactController = async (req, res, next) => {
   const { contactId } = req.params;
   const userId = req.user._id;
-  const result = await contactsServices.patchContact(contactId, req.body, userId);
+  const photo = req.file;
+  let photoUrl;
+  if (!mongoose.Types.ObjectId.isValid(contactId)) {
+    return next(createHttpError(400, 'Invalid contactId'));
+  }
+  if (photo) {
+    if (process.env.ENABLE_CLOUDINARY === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+  }
+
+  const result = await contactsServices.patchContact(
+    contactId,
+    { userId, ...req.body, photo: photoUrl },
+    { new: true },
+  );
 
   if (!result) {
     next(createHttpError(404, 'Contact not found'));
